@@ -19,4 +19,4 @@ npm start
 ```
 
 
-Aug 4, 2023. Last minor manteinance: Sep 9, 2026.
+Aug 4, 2023. Last minor maintenance: Sep 9, 2026.
