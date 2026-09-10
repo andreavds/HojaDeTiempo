@@ -100,7 +100,7 @@ export interface Notificacion {
 export class NotificacionService {
   private readonly DB_NOMBRE = 'mi_basededatos';
   private readonly OBJETO_TIENDA = 'notificaciones';
-  private readonly DB_VERSION = 5;
+  private readonly DB_VERSION = 9;
   private db: IDBDatabase | null = null;
 
   constructor() {
@@ -121,12 +121,16 @@ export class NotificacionService {
 
   async agregarNotificacion(notificacion: Notificacion): Promise<number> {
     if (!this.db) {
-      return Promise.reject('Error: Base de datos no disponible.');
+      await this.abrirConexion().then((db) => {
+        this.db = db;
+      });
     }
-    const db = this.db; // Almacenar this.db en una variable local
+
+    const db = this.db as IDBDatabase;
     const transaccion = db.transaction(this.OBJETO_TIENDA, 'readwrite');
     const tienda = transaccion.objectStore(this.OBJETO_TIENDA);
     const solicitud = tienda.add(notificacion);
+
     return new Promise<number>((resolve, reject) => {
       solicitud.onsuccess = (evento) => {
         const id = (evento.target as IDBRequest<IDBValidKey>).result;
@@ -140,9 +144,13 @@ export class NotificacionService {
 
   async obtenerNotificacionesPorProyecto(proyectoCodigo: string): Promise<Notificacion[]> {
     if (!this.db) {
-      return Promise.reject('Error: Base de datos no disponible.');
+      await this.abrirConexion().then((db) => {
+        this.db = db;
+      });
     }
-    const db = this.db; // Almacenar this.db en una variable local
+
+    const db = this.db as IDBDatabase;
+
     return new Promise<Notificacion[]>((resolve) => {
       const transaccion = db.transaction(this.OBJETO_TIENDA, 'readonly');
       const tienda = transaccion.objectStore(this.OBJETO_TIENDA);
@@ -166,24 +174,39 @@ export class NotificacionService {
 
   private async abrirConexion(): Promise<IDBDatabase> {
     return new Promise<IDBDatabase>((resolve, reject) => {
-      const solicitud = indexedDB.open(this.DB_NOMBRE, this.DB_VERSION);
+      const intentarAbrir = (version: number) => {
+        const solicitud = indexedDB.open(this.DB_NOMBRE, version);
 
-      solicitud.onupgradeneeded = (evento) => {
-        const db = (evento.target as IDBOpenDBRequest).result;
-        if (!db.objectStoreNames.contains(this.OBJETO_TIENDA)) {
-          const objectStore = db.createObjectStore(this.OBJETO_TIENDA, { keyPath: 'id', autoIncrement: true });
-          objectStore.createIndex('proyectoCodigo', 'proyectoCodigo', { unique: false });
-        }
+        solicitud.onupgradeneeded = (evento) => {
+          const db = (evento.target as IDBOpenDBRequest).result;
+
+          if (!db.objectStoreNames.contains(this.OBJETO_TIENDA)) {
+            const objectStore = db.createObjectStore(this.OBJETO_TIENDA, { keyPath: 'id', autoIncrement: true });
+            if (!objectStore.indexNames.contains('proyectoCodigo')) {
+              objectStore.createIndex('proyectoCodigo', 'proyectoCodigo', { unique: false });
+            }
+          }
+        };
+
+        solicitud.onsuccess = (evento) => {
+          const db = (evento.target as IDBOpenDBRequest).result;
+
+          if (!db.objectStoreNames.contains(this.OBJETO_TIENDA)) {
+            db.close();
+            intentarAbrir(version + 1);
+            return;
+          }
+
+          this.db = db;
+          resolve(db);
+        };
+
+        solicitud.onerror = (evento) => {
+          reject((evento.target as IDBOpenDBRequest).error);
+        };
       };
 
-      solicitud.onsuccess = (evento) => {
-        const db = (evento.target as IDBOpenDBRequest).result;
-        resolve(db);
-      };
-
-      solicitud.onerror = (evento) => {
-        reject((evento.target as IDBOpenDBRequest).error);
-      };
+      intentarAbrir(this.DB_VERSION);
     });
   }
 }

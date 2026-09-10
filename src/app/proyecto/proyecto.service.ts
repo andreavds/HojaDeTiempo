@@ -12,7 +12,7 @@ export interface Proyecto {
 export class ProyectoService {
   private readonly DB_NOMBRE = 'mi_basededatos';
   private readonly OBJETO_TIENDA = 'proyectos';
-  private readonly DB_VERSION = 5;
+  private readonly DB_VERSION = 9;
 
   async getAllProyectos(): Promise<Proyecto[]> {
     const db = await this.abrirConexion();
@@ -59,21 +59,35 @@ export class ProyectoService {
 
   private async abrirConexion(): Promise<IDBDatabase> {
     return new Promise<IDBDatabase>((resolve, reject) => {
-      const solicitud = indexedDB.open(this.DB_NOMBRE, this.DB_VERSION);
+      const intentarAbrir = (version: number) => {
+        const solicitud = indexedDB.open(this.DB_NOMBRE, version);
 
-      solicitud.onupgradeneeded = (evento) => {
-        const db = (evento.target as IDBOpenDBRequest).result;
-//        db.createObjectStore(this.OBJETO_TIENDA, { keyPath: 'codigo' });
+        solicitud.onupgradeneeded = (evento) => {
+          const db = (evento.target as IDBOpenDBRequest).result;
+
+          if (!db.objectStoreNames.contains(this.OBJETO_TIENDA)) {
+            db.createObjectStore(this.OBJETO_TIENDA, { keyPath: 'codigo' });
+          }
+        };
+
+        solicitud.onsuccess = (evento) => {
+          const db = (evento.target as IDBOpenDBRequest).result;
+
+          if (!db.objectStoreNames.contains(this.OBJETO_TIENDA)) {
+            db.close();
+            intentarAbrir(version + 1);
+            return;
+          }
+
+          resolve(db);
+        };
+
+        solicitud.onerror = (evento) => {
+          reject((evento.target as IDBOpenDBRequest).error);
+        };
       };
 
-      solicitud.onsuccess = (evento) => {
-        const db = (evento.target as IDBOpenDBRequest).result;
-        resolve(db);
-      };
-
-      solicitud.onerror = (evento) => {
-        reject((evento.target as IDBOpenDBRequest).error);
-      };
+      intentarAbrir(this.DB_VERSION);
     });
   }
 }

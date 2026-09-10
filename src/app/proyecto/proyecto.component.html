@@ -1,31 +1,39 @@
-<h2>HOLA aqui estan los proyectos </h2>
+<div class="data-page">
+  <div class="data-card">
+    <h2>Proyectos</h2>
 
+    <div class="data-table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Descripción del Proyecto</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let proyecto of proyectos">
+            <td>{{ proyecto.codigo }}</td>
+            <td>{{ proyecto.descripcion }}</td>
+            <td class="actions-cell">
+              <button class="secondary-button" (click)="editarProyecto(proyecto.codigo)">Editar</button>
+              <button class="danger-button" (click)="eliminarProyecto(proyecto.codigo)">Eliminar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-<table>
-    <thead>
-      <tr>
-        <th>Código</th>
-        <th>Descripción del Proyecto</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let proyecto of proyectos">
-        <td>{{ proyecto.codigo }}</td>
-        <td>{{ proyecto.descripcion }}</td>
-        <td>
-          <button (click)="editarProyecto(proyecto.codigo)">Editar</button>
-          <button (click)="eliminarProyecto(proyecto.codigo)">Eliminar</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  
-  <div>
-    <input type="text" [(ngModel)]="codigoProyecto" placeholder="Código del Proyecto">
-    <button (click)="nuevoProyecto()">Añadir Nuevo Proyecto</button>
-    <div *ngIf="mostrarFormulario">
-      <input type="text" [(ngModel)]="descripcionProyecto" placeholder="Descripción del Proyecto">
-      <button (click)="confirmarAccion()">Confirmar</button>
+    <div class="data-form">
+      <div class="data-input-group">
+        <input type="text" [(ngModel)]="codigoProyecto" placeholder="Código del Proyecto">
+        <button (click)="nuevoProyecto()">Añadir Nuevo Proyecto</button>
+      </div>
+
+      <div *ngIf="mostrarFormulario" class="data-inline-form">
+        <input type="text" [(ngModel)]="descripcionProyecto" placeholder="Descripción del Proyecto">
+        <button class="primary-button" (click)="confirmarAccion()">Confirmar</button>
+      </div>
     </div>
   </div>
+</div>

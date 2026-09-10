@@ -1,31 +1,43 @@
+<div class="report-page">
+  <div class="report-card">
+    <h1>reportadisimo papu xD :v</h1>
 
-<h1> reportadisimo papu xD :v </h1>
+    <h2>Reporte de Proyecto</h2>
+    <div class="report-controls">
+      <label class="report-label">Proyecto:</label>
+      <select class="report-select" [(ngModel)]="proyectoSeleccionado">
+        <option *ngFor="let proyecto of proyectos" [value]="proyecto.codigo">{{ proyecto.descripcion }}</option>
+      </select>
+      <button class="report-button" (click)="generarReporte()">Generar Reporte</button>
+    </div>
+  </div>
 
-<h2>Reporte de Proyecto</h2>
-<div>
-  <label>Proyecto:</label>
-  <select [(ngModel)]="proyectoSeleccionado">
-    <option *ngFor="let proyecto of proyectos" [value]="proyecto.codigo">{{ proyecto.descripcion }}</option>
-  </select>
-  <button (click)="generarReporte()">Generar Reporte</button>
-</div>
+  <div class="report-card">
+    <h2>Reporte de Recursos y Tiempo Acumulado</h2>
+    <div class="report-table-wrapper">
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th>Recurso</th>
+            <th>Tiempo Dedicado Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let recurso of recursosConTiempo">
+            <td>{{ recurso.recurso }}</td>
+            <td>{{ recurso.tiempoDedicadoTotal }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-<div>
-  <h2>Reporte de Recursos y Tiempo Acumulado</h2>
-    <table>
-    <thead>
-      <tr>
-        <th>Recurso</th>
-        <th>Tiempo Dedicado Total</th>
-    </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let recurso of recursosConTiempo">
-        <td>{{ recurso.recurso }}</td>
-        <td>{{ recurso.tiempoDedicadoTotal }}</td>
-    </tr>
-  </tbody>
-</table>
+  <div class="report-card report-chart-card">
+    <h2>Gráfica del Proyecto</h2>
+    <div class="report-chart-wrapper">
+      <canvas #graficaProyecto></canvas>
+    </div>
+  </div>
 </div>
 
 

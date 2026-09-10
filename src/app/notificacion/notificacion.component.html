@@ -81,39 +81,45 @@
   !-->
 
 
-  <h2>Notificación</h2>
-<p>Hola yo le notifico</p>
+<div class="notification-page">
+  <div class="notification-card">
+    <h2>Notificación</h2>
+    <p>Hola yo le notifico</p>
 
-<form>
-  <div>
-    <label>Recurso:</label>
-    <select [(ngModel)]="recursoSeleccionado" [ngModelOptions]="{ standalone: true }">
-      <option *ngFor="let recurso of recursos" [value]="recurso.codigo">{{ recurso.nombre }}</option>
-    </select>
+    <form class="notification-form">
+      <div class="notification-field">
+        <label>Recurso:</label>
+        <select [(ngModel)]="recursoSeleccionado" [ngModelOptions]="{ standalone: true }">
+          <option *ngFor="let recurso of recursos" [value]="recurso.codigo">{{ recurso.nombre }}</option>
+        </select>
+      </div>
+
+      <div class="notification-field">
+        <label>Proyecto:</label>
+        <select [(ngModel)]="proyectoSeleccionado" [ngModelOptions]="{ standalone: true }">
+          <option *ngFor="let proyecto of proyectos" [value]="proyecto.codigo">{{ proyecto.descripcion }}</option>
+        </select>
+      </div>
+
+      <div class="notification-field">
+        <label>Tiempo dedicado (días):</label>
+        <input type="number" [(ngModel)]="tiempoDedicado" [ngModelOptions]="{ standalone: true }">
+      </div>
+
+      <div class="notification-field">
+        <label>Fecha:</label>
+        <input type="date" [(ngModel)]="fecha" [ngModelOptions]="{ standalone: true }">
+      </div>
+
+      <div class="notification-field notification-field-inline">
+        <label>Porcentaje de avance:</label>
+        <div class="notification-inline-input">
+          <input type="number" [(ngModel)]="porcentajeAvance" [ngModelOptions]="{ standalone: true }" min="1" max="100">
+          <span>%</span>
+        </div>
+      </div>
+
+      <button class="notification-button" (click)="notificar()">Notificar</button>
+    </form>
   </div>
-
-  <div>
-    <label>Proyecto:</label>
-    <select [(ngModel)]="proyectoSeleccionado" [ngModelOptions]="{ standalone: true }">
-      <option *ngFor="let proyecto of proyectos" [value]="proyecto.codigo">{{ proyecto.descripcion }}</option>
-    </select>
-  </div>
-
-  <div>
-    <label>Tiempo dedicado (días):</label>
-    <input type="number" [(ngModel)]="tiempoDedicado" [ngModelOptions]="{ standalone: true }">
-  </div>
-
-  <div>
-    <label>Fecha:</label>
-    <input type="date" [(ngModel)]="fecha" [ngModelOptions]="{ standalone: true }">
-  </div>
-
-  <div>
-    <label>Porcentaje de avance:</label>
-    <input type="number" [(ngModel)]="porcentajeAvance" [ngModelOptions]="{ standalone: true }" min="1" max="100">
-    <span>%</span>
-  </div>
-
-  <button (click)="notificar()">Notificar</button>
-</form>
+</div>

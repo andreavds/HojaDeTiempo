@@ -23,14 +23,15 @@ export class ProyectoComponent {
   }
 
   nuevoProyecto(): void {
-    this.mostrarFormulario = true;
-    this.descripcionProyecto = '';
+    const codigo = this.codigoProyecto.trim();
 
-    if (Number(this.codigoProyecto) <= 0 || isNaN(Number(this.codigoProyecto)) || this.proyectos.some((proyecto) => proyecto.codigo === this.codigoProyecto)) {
-      alert('Inserta un código válido');
-      this.mostrarFormulario = false;
+    if (!codigo) {
+      alert('Inserta un código para el proyecto');
       return;
     }
+
+    this.mostrarFormulario = true;
+    this.descripcionProyecto = '';
   }
 
   editarProyecto(codigo: string): void {
@@ -44,31 +45,44 @@ export class ProyectoComponent {
   }
 
   confirmarAccion(): void {
-    if (this.codigoProyecto && this.descripcionProyecto) {
-      if (this.mostrarFormulario) {
-        if (this.proyectos.some((proyecto) => proyecto.codigo === this.codigoProyecto)) {
-          this.proyectoService
-            .actualizarProyecto({
-              codigo: this.codigoProyecto, descripcion: this.descripcionProyecto,
-              recurso: ''
-            })
-            .then(() => {
-              this.cargarProyectos();
-              this.mostrarFormulario = false;
-            });
-        } else {
-          // Proyecto nuevo, realizar adición
-          this.proyectoService
-            .agregarProyecto({
-              codigo: this.codigoProyecto, descripcion: this.descripcionProyecto,
-              recurso: ''
-            })
-            .then(() => {
-              this.cargarProyectos();
-              this.mostrarFormulario = false;
-            });
-        }
-      }
+    const codigo = this.codigoProyecto.trim();
+    const descripcion = this.descripcionProyecto.trim();
+
+    if (!codigo || !descripcion) {
+      alert('Completa el código y la descripción del proyecto');
+      return;
+    }
+
+    if (!this.mostrarFormulario) {
+      return;
+    }
+
+    if (this.proyectos.some((proyecto) => proyecto.codigo === codigo)) {
+      this.proyectoService
+        .actualizarProyecto({
+          codigo,
+          descripcion,
+          recurso: ''
+        })
+        .then(() => {
+          this.cargarProyectos();
+          this.mostrarFormulario = false;
+          this.codigoProyecto = '';
+          this.descripcionProyecto = '';
+        });
+    } else {
+      this.proyectoService
+        .agregarProyecto({
+          codigo,
+          descripcion,
+          recurso: ''
+        })
+        .then(() => {
+          this.cargarProyectos();
+          this.mostrarFormulario = false;
+          this.codigoProyecto = '';
+          this.descripcionProyecto = '';
+        });
     }
   }
 

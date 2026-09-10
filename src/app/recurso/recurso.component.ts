@@ -189,14 +189,15 @@ export class RecursoComponent {
   }
 
   nuevoRecurso(): void {
-    this.mostrarFormulario = true;
-    this.nombreRecurso = '';
+    const codigo = this.codigoRecurso.trim();
 
-    if (Number(this.codigoRecurso) <= 0 || isNaN(Number(this.codigoRecurso)) || this.recursos.some((recurso) => recurso.codigo === this.codigoRecurso)) {
-      alert('Inserta un código válido');
-      this.mostrarFormulario = false;
+    if (!codigo) {
+      alert('Inserta un código para el recurso');
       return;
     }
+
+    this.mostrarFormulario = true;
+    this.nombreRecurso = '';
   }
 
   editarRecurso(codigo: string): void {
@@ -210,25 +211,36 @@ export class RecursoComponent {
   }
 
   confirmarAccion(): void {
-    if (this.codigoRecurso && this.nombreRecurso) {
-      if (this.mostrarFormulario) {
-        if (this.recursos.some((recurso) => recurso.codigo === this.codigoRecurso)) {
-          this.recursoService
-            .actualizarRecurso({ codigo: this.codigoRecurso, nombre: this.nombreRecurso })
-            .then(() => {
-              this.cargarRecursos();
-              this.mostrarFormulario = false;
-            });
-        } else {
-          // Precurso nuevo, realizar adición
-          this.recursoService
-            .agregarRecurso({ codigo: this.codigoRecurso, nombre: this.nombreRecurso })
-            .then(() => {
-              this.cargarRecursos();
-              this.mostrarFormulario = false;
-            });
-        }
-      }
+    const codigo = this.codigoRecurso.trim();
+    const nombre = this.nombreRecurso.trim();
+
+    if (!codigo || !nombre) {
+      alert('Completa el código y el nombre del recurso');
+      return;
+    }
+
+    if (!this.mostrarFormulario) {
+      return;
+    }
+
+    if (this.recursos.some((recurso) => recurso.codigo === codigo)) {
+      this.recursoService
+        .actualizarRecurso({ codigo, nombre })
+        .then(() => {
+          this.cargarRecursos();
+          this.mostrarFormulario = false;
+          this.codigoRecurso = '';
+          this.nombreRecurso = '';
+        });
+    } else {
+      this.recursoService
+        .agregarRecurso({ codigo, nombre })
+        .then(() => {
+          this.cargarRecursos();
+          this.mostrarFormulario = false;
+          this.codigoRecurso = '';
+          this.nombreRecurso = '';
+        });
     }
   }
 

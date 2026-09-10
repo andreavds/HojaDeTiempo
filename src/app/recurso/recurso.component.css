@@ -1,0 +1,146 @@
+.data-page {
+  padding: 12px 0 32px;
+}
+
+.data-card {
+  max-width: 980px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.82);
+  border: 2px solid #111111;
+  border-radius: 24px;
+  box-shadow: 0 18px 40px rgba(17, 17, 17, 0.12);
+  padding: 24px;
+}
+
+.data-card h2 {
+  margin: 0 0 18px;
+  font-size: clamp(1.8rem, 2vw, 2.4rem);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+.data-table-wrapper {
+  overflow-x: auto;
+  border-radius: 14px;
+  border: 1px solid rgba(17, 17, 17, 0.18);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+}
+
+.data-table th,
+.data-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(17, 17, 17, 0.12);
+  text-align: left;
+}
+
+.data-table th {
+  background: #f2ece4;
+  font-size: 0.95rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.data-table tbody tr:nth-child(even) {
+  background: rgba(17, 17, 17, 0.02);
+}
+
+.actions-cell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.data-form {
+  margin-top: 22px;
+  display: grid;
+  gap: 16px;
+}
+
+.data-input-group,
+.data-inline-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.data-form input {
+  flex: 1;
+  min-width: 220px;
+  background: #f8f5f2;
+  border: 1.5px solid rgba(17, 17, 17, 0.25);
+  border-radius: 12px;
+  padding: 11px 14px;
+  font-size: 1rem;
+  color: #111111;
+}
+
+.data-form input:focus {
+  outline: none;
+  border-color: #111111;
+  box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.08);
+}
+
+.data-form button {
+  margin: 0;
+}
+
+.secondary-button {
+  background: #ffffff;
+  color: #111111;
+  border: 2px solid #111111;
+}
+
+.secondary-button:hover {
+  background: #111111;
+  color: #ffffff;
+}
+
+.danger-button {
+  background: #111111;
+  color: #ffffff;
+  border: 2px solid #111111;
+}
+
+.danger-button:hover {
+  background: #ffffff;
+  color: #111111;
+}
+
+.primary-button {
+  background: #111111;
+  color: #ffffff;
+  border: 2px solid #111111;
+}
+
+.primary-button:hover {
+  background: #ffffff;
+  color: #111111;
+}
+
+@media (max-width: 700px) {
+  .data-card {
+    padding: 18px;
+  }
+
+  .data-input-group,
+  .data-inline-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .data-form input,
+  .data-form button {
+    width: 100%;
+  }
+
+  .actions-cell {
+    justify-content: flex-start;
+  }
+}
